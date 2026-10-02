@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Maatram Hard Lock</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+    }
+
+
+    body {
+
+      min-height: 100vh;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 30px;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      color: #eafff7;
+
+      background:
+
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(45, 226, 194, 0.18),
+          transparent 35%
+        ),
+
+        radial-gradient(
+          circle at 80% 80%,
+          rgba(54, 189, 245, 0.15),
+          transparent 35%
+        ),
+
+        linear-gradient(
+          135deg,
+          #020d0a,
+          #031914,
+          #041f19
+        );
+
+      overflow: hidden;
+
+    }
+
+
+    .background {
+
+      position: fixed;
+
+      inset: 0;
+
+      pointer-events: none;
+
+      background:
+
+        radial-gradient(
+          circle at 50% 50%,
+          rgba(45, 226, 194, 0.08),
+          transparent 40%
+        );
+
+    }
+
+
+    .card {
+
+      position: relative;
+
+      width:
+        min(620px, 100%);
+
+      padding:
+        50px 40px;
+
+      text-align: center;
+
+      border-radius: 28px;
+
+      border:
+        1px solid
+        rgba(45, 226, 194, 0.35);
+
+      background:
+        rgba(4, 31, 25, 0.82);
+
+      backdrop-filter:
+        blur(18px);
+
+      box-shadow:
+
+        0 0 50px
+        rgba(45, 226, 194, 0.12),
+
+        inset 0 1px 0
+        rgba(255,255,255,0.04);
+
+    }
+
+
+    .logo {
+
+      width: 70px;
+
+      height: 70px;
+
+      margin:
+        0 auto 22px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      border-radius: 20px;
+
+      font-size: 38px;
+
+      font-weight: 900;
+
+      color: #05201a;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2de2c2,
+          #36bdf5
+        );
+
+      box-shadow:
+        0 0 35px
+        rgba(45, 226, 194, 0.35);
+
+    }
+
+
+    .brand {
+
+      font-size: 13px;
+
+      font-weight: 900;
+
+      letter-spacing: 4px;
+
+      color: #54e6ca;
+
+    }
+
+
+    h1 {
+
+      margin:
+        10px 0 12px;
+
+      font-size:
+        clamp(34px, 6vw, 54px);
+
+      line-height: 1;
+
+      letter-spacing: -2px;
+
+    }
+
+
+    .site {
+
+      display: inline-block;
+
+      margin-top: 12px;
+
+      padding:
+        9px 16px;
+
+      border-radius: 999px;
+
+      color: #a7d8cd;
+
+      background: #062820;
+
+      border:
+        1px solid #145143;
+
+      font-size: 13px;
+
+    }
+
+
+    .message {
+
+      margin:
+        25px auto 0;
+
+      max-width: 470px;
+
+      color: #82aaa1;
+
+      font-size: 15px;
+
+      line-height: 1.7;
+
+    }
+
+
+    .timer {
+
+      margin-top: 30px;
+
+      font-size: 52px;
+
+      font-weight: 900;
+
+      letter-spacing: 3px;
+
+      color: #f0fffb;
+
+      text-shadow:
+        0 0 25px
+        rgba(45, 226, 194, 0.25);
+
+    }
+
+
+    .active {
+
+      display: inline-block;
+
+      margin-top: 25px;
+
+      padding:
+        10px 18px;
+
+      border-radius: 999px;
+
+      font-size: 10px;
+
+      font-weight: 900;
+
+      letter-spacing: 2px;
+
+      color: #05201a;
+
+      background:
+        linear-gradient(
+          135deg,
+          #2de2c2,
+          #36bdf5
+        );
+
+    }
+
+
+    .footer {
+
+      margin-top: 35px;
+
+      font-size: 9px;
+
+      font-weight: 800;
+
+      letter-spacing: 2px;
+
+      color: #48786f;
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <div class="background"></div>
+
+
+  <main class="card">
+
+
+    <div class="logo">
+      M
+    </div>
+
+
+    <div class="brand">
+      MAATRAM
+    </div>
+
+
+    <h1>
+      Hard Lock Active
+    </h1>
+
+
+    <div
+      id="site"
+      class="site"
+    >
+      Protected website
+    </div>
+
+
+    <p class="message">
+
+      This website is behind
+      your focus gate right now.
+
+      <br>
+
+      Your distraction-free
+      window is still running.
+
+    </p>
+
+
+    <div
+      id="timer"
+      class="timer"
+    >
+      Loading...
+    </div>
+
+
+    <div class="active">
+
+      🔒 FOCUS MODE ACTIVE
+
+    </div>
+
+
+    <div class="footer">
+
+      BUILT BY MAATRAM
+      •
+      TAKE BACK YOUR TIME
+
+    </div>
+
+
+  </main>
+
+
+  <!-- External JavaScript.
+       Required for Manifest V3 CSP. -->
+
+  <script src="blocked.js"></script>
+
+
+</body>
+
+</html>

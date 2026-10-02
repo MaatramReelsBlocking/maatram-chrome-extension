@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Maatram Hard Lock</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body>
+
+  <div class="popup">
+
+
+    <!-- TOP BRANDING -->
+
+    <div class="brand">
+
+      <div class="brand-logo">
+        M
+      </div>
+
+      <div>
+
+        <div class="brand-name">
+          MAATRAM
+        </div>
+
+        <div class="brand-subtitle">
+          ACTION → VALUE
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- HARD LOCK HEADER -->
+
+    <div class="header">
+
+      <div>
+
+        <div class="small-label">
+          MAATRAM
+        </div>
+
+        <h1>
+          Hard Lock
+        </h1>
+
+      </div>
+
+
+      <div
+        id="lockBadge"
+        class="badge off"
+      >
+        UNLOCKED
+      </div>
+
+    </div>
+
+
+    <!-- STATUS CARD -->
+
+    <div
+      id="statusCard"
+      class="status-card"
+    >
+
+      <div
+        id="statusIcon"
+        class="status-icon"
+      >
+        🔓
+      </div>
+
+
+      <div class="status-content">
+
+        <div
+          id="statusText"
+          class="status-title"
+        >
+          Hard Lock is OFF
+        </div>
+
+        <div
+          id="statusDescription"
+          class="status-description"
+        >
+          Start Hard Lock from Maatram
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- TIMER -->
+
+    <div class="timer-section">
+
+      <div class="timer-label">
+        FOCUS WINDOW
+      </div>
+
+      <div
+        id="timer"
+        class="timer"
+      >
+        00:00:00
+      </div>
+
+    </div>
+
+
+    <!-- BLOCKED SITES -->
+
+    <div class="blocked-section">
+
+      <div class="section-title">
+        PROTECTED SITES
+      </div>
+
+
+      <div class="sites">
+
+        <div class="site" data-site="instagram.com">
+          <span>Instagram</span>
+          <span class="dot"></span>
+        </div>
+
+        <div class="site" data-site="snapchat.com">
+          <span>Snapchat</span>
+          <span class="dot"></span>
+        </div>
+
+        <div class="site" data-site="tiktok.com">
+          <span>TikTok</span>
+          <span class="dot"></span>
+        </div>
+
+        <div class="site" data-site="youtube.com">
+          <span>YouTube</span>
+          <span class="dot"></span>
+        </div>
+
+        <div class="site" data-site="x.com">
+          <span>X</span>
+          <span class="dot"></span>
+        </div>
+
+        <div class="site" data-site="facebook.com">
+          <span>Facebook</span>
+          <span class="dot"></span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- START A LOCK FROM HERE -->
+
+    <div
+      id="lockControl"
+      class="lock-control"
+    >
+
+      <label
+        class="section-title"
+        for="lockMinutes"
+      >
+        START A FOCUS WINDOW
+      </label>
+
+
+      <div class="lock-row">
+
+        <select id="lockMinutes">
+          <option value="5">5 minutes</option>
+          <option value="15">15 minutes</option>
+          <option value="25" selected>25 minutes</option>
+          <option value="45">45 minutes</option>
+          <option value="60">60 minutes</option>
+          <option value="90">90 minutes</option>
+        </select>
+
+        <button
+          id="startLock"
+          type="button"
+        >
+          Lock
+        </button>
+
+      </div>
+
+
+      <div
+        id="lockError"
+        class="lock-error"
+        role="alert"
+      ></div>
+
+    </div>
+
+
+    <!-- YOUR OWN SITES -->
+
+    <div class="my-sites">
+
+      <label class="section-title" for="siteInput">
+        YOUR SITES
+      </label>
+
+      <form id="siteForm" class="lock-row" autocomplete="off">
+        <input id="siteInput" type="text" placeholder="e.g. netflix.com" maxlength="100">
+        <button id="addSite" type="submit">Add</button>
+      </form>
+
+      <div id="siteError" class="lock-error" role="alert"></div>
+
+      <div id="siteList" class="site-list"></div>
+
+    </div>
+
+
+    <!-- WEBSITE CONTROL MESSAGE -->
+
+    <div class="control-box">
+
+      <div class="control-icon">
+        ↗
+      </div>
+
+      <div>
+
+        <div class="control-title">
+          Also works with Maatram
+        </div>
+
+        <div class="control-text">
+          Locks started on maatram.co.in
+          appear here too
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+      <span>
+        BUILT BY MAATRAM
+      </span>
+
+      <span>
+        •
+      </span>
+
+      <span>
+        FOCUS
+      </span>
+
+    </div>
+
+
+  </div>
+
+
+  <script src="popup.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+{
+  "manifest_version": 3,
+  "name": "Maatram Hard Lock",
+  "version": "1.2.0",
+  "description": "Blocks distracting sites during a Maatram Hard Lock and counts your time on them for your Maatram screen-time stats.",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "declarativeNetRequest",
+    "idle"
+  ],
+  "host_permissions": [
+    "*://youtube.com/*",
+    "*://*.youtube.com/*",
+    "*://instagram.com/*",
+    "*://*.instagram.com/*",
+    "*://x.com/*",
+    "*://*.x.com/*",
+    "*://facebook.com/*",
+    "*://*.facebook.com/*",
+    "*://tiktok.com/*",
+    "*://*.tiktok.com/*",
+    "*://snapchat.com/*",
+    "*://*.snapchat.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Maatram Hard Lock",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "externally_connectable": {
+    "matches": [
+      "https://maatram.co.in/*"
+    ]
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "blocked.html"
+      ],
+      "matches": [
+        "*://youtube.com/*",
+        "*://*.youtube.com/*",
+        "*://instagram.com/*",
+        "*://*.instagram.com/*",
+        "*://x.com/*",
+        "*://*.x.com/*",
+        "*://facebook.com/*",
+        "*://*.facebook.com/*",
+        "*://tiktok.com/*",
+        "*://*.tiktok.com/*",
+        "*://snapchat.com/*",
+        "*://*.snapchat.com/*"
+      ]
+    }
+  ]
+}
