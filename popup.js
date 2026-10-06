@@ -270,6 +270,9 @@ startButtonElement.addEventListener(
 
     startButtonElement.disabled = true;
 
+    // Sites added on maatram.co.in never got asked: ask now, while it's a click.
+    askSiteAccess(knownSites); // not awaited: the prompt can close the popup
+
 
     try {
 
@@ -344,9 +347,22 @@ async function saveSites(list) {
   renderSites();
 }
 
+/* Ask once per site so it shows the green lock screen instead of Chrome's grey error.
+   Must run before any await: Chrome only allows it straight from a click. */
+let knownSites = [];
+function siteOrigins(d) { return ["*://" + d + "/*", "*://*." + d + "/*"]; }
+function askSiteAccess(sites) {
+  const origins = sites.filter(Boolean).flatMap(siteOrigins);
+  return origins.length ? chrome.permissions.request({ origins }).catch(() => false) : Promise.resolve(false);
+}
+function cleanSite(v) {
+  return String(v || "").trim().toLowerCase().replace(/^[a-z][a-z0-9+.-]*:\/\//, "").split(/[\/?#:]/)[0].replace(/^www\./, "");
+}
+
 async function renderSites() {
   const data = await chrome.storage.local.get(["customSites", "hardLockActive", "hardLockEndTime"]);
   const sites = Array.isArray(data.customSites) ? data.customSites : [];
+  knownSites = sites;
   const locked = Boolean(data.hardLockActive) && Number(data.hardLockEndTime) > Date.now();
   siteForm.parentElement.classList.toggle("locked", locked);
   siteList.textContent = sites.length ? "" : (locked ? "" : "Add any site you want locked too.");
@@ -368,6 +384,7 @@ siteForm.addEventListener("submit", async event => {
   event.preventDefault();
   const value = siteInput.value.trim();
   if (!value) return;
+  askSiteAccess([cleanSite(value)]); // not awaited: the prompt can close the popup
   const { customSites = [] } = await chrome.storage.local.get("customSites");
   siteInput.value = "";
   await saveSites(customSites.concat(value));

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Maatram Hard Lock",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Blocks distracting sites during a Maatram Hard Lock and counts your time on them for your Maatram screen-time stats.",
   "icons": {
     "16": "icon16.png",
@@ -29,6 +29,9 @@
     "*://*.tiktok.com/*",
     "*://snapchat.com/*",
     "*://*.snapchat.com/*"
+  ],
+  "optional_host_permissions": [
+    "*://*/*"
   ],
   "background": {
     "service_worker": "background.js"

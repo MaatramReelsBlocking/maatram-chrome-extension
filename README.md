@@ -20,7 +20,7 @@ The Chrome extension for [Maatram](https://maatram.co.in), the free focus and sc
 | `idle` | Only counts screen time while you're actually at the computer |
 | Host access to the six built-in sites | Needed to show the Maatram lock screen on them |
 
-"Your sites" use a plain block rule, which needs no extra host access. Nothing is sent anywhere: data stays in `chrome.storage.local` and is only given to maatram.co.in when the Stats page asks.
+"Your sites": when you add one (or start a lock from the popup), Chrome asks for access to just that site. Allow it and the site gets the Maatram lock screen with the timer; deny it and the site still gets blocked, with Chrome's plain "blocked" page. This is an optional permission (`optional_host_permissions`), asked one site at a time. Nothing is sent anywhere: data stays in `chrome.storage.local` and is only given to maatram.co.in when the Stats page asks.
 
 ## Install from source
 

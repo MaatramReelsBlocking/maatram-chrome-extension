@@ -47,9 +47,17 @@ function createBlockingRules() {
 
 /*
  * Your own sites (added in the popup or on maatram.co.in).
- * They use a plain "block" rule, which needs no host permission,
- * so the extension's permissions stay exactly the same.
+ * With the user's OK for that site (asked in the popup), they get the same
+ * green lock screen as YouTube; without it, a plain "block" rule.
  */
+
+function siteOrigins(d) {
+  return ["*://" + d + "/*", "*://*." + d + "/*"];
+}
+
+async function hasSiteAccess(d) {
+  return chrome.permissions.contains({ origins: siteOrigins(d) }).catch(() => false);
+}
 
 function normalizeSite(value) {
 
@@ -94,14 +102,16 @@ async function setCustomSites(list) {
 }
 
 
-function createCustomRules(sites) {
+async function createCustomRules(sites) {
 
-  return sites.map((domain, index) => ({
+  return Promise.all(sites.map(async (domain, index) => ({
     id: CUSTOM_RULE_START + index,
     priority: 100,
-    action: { type: "block" },
+    action: (await hasSiteAccess(domain))
+      ? { type: "redirect", redirect: { extensionPath: "/blocked.html?site=" + encodeURIComponent(domain) } }
+      : { type: "block" },
     condition: { requestDomains: [domain], resourceTypes: ["main_frame"] }
-  }));
+  })));
 
 }
 
@@ -118,7 +128,7 @@ async function enableBlocking() {
 
   const rules =
     createBlockingRules().concat(
-      createCustomRules(await getCustomSites())
+      await createCustomRules(await getCustomSites())
     );
 
   await chrome.declarativeNetRequest.updateDynamicRules({
@@ -199,7 +209,7 @@ async function lockUntil(endTime) {
   await enableBlocking();
 
   // Rules only catch new page loads: reload tabs already open on a protected site.
-  const open = await chrome.tabs.query({ url: BLOCKED_DOMAINS.flatMap(d => ["*://" + d + "/*", "*://*." + d + "/*"]) }).catch(() => []);
+  const open = await chrome.tabs.query({ url: BLOCKED_DOMAINS.concat(await getCustomSites()).flatMap(siteOrigins) }).catch(() => []);
   open.forEach(t => chrome.tabs.reload(t.id).catch(() => {}));
 
 
@@ -629,3 +639,9 @@ chrome.alarms.onAlarm.addListener(alarm => {
 });
 
 chrome.runtime.onStartup.addListener(() => pollLink().catch(() => {}));
+
+/* Site access granted mid-lock: switch that site from the plain block to the lock screen. */
+chrome.permissions.onAdded.addListener(async () => {
+  const data = await chrome.storage.local.get(["hardLockActive", "hardLockEndTime"]);
+  if (data.hardLockActive && Number(data.hardLockEndTime) > Date.now()) await enableBlocking();
+});
