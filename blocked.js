@@ -79,7 +79,7 @@ async function loadLockTime() {
 
     } else {
 
-      timer.textContent = "00:00";
+      lockOver();
 
     }
 
@@ -92,6 +92,14 @@ async function loadLockTime() {
 
   }
 
+}
+
+
+/* the lock ended while this page was open: say so, the sites work again */
+function lockOver() {
+  timer.textContent = "Lock over";
+  const h = document.querySelector("h1");
+  if (h) h.textContent = "Hard Lock ended. You can go back now.";
 }
 
 
@@ -111,7 +119,7 @@ function updateTimer() {
 
   if (remaining <= 0) {
 
-    timer.textContent = "00:00";
+    lockOver();
     return;
 
   }

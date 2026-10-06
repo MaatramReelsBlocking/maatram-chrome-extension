@@ -177,6 +177,9 @@ async function startHardLock(minutes) {
 /* Locks until an exact time (used by the toolbar, the website and linked devices). */
 async function lockUntil(endTime) {
 
+  const cur = await chrome.storage.local.get(["hardLockActive", "hardLockEndTime"]);
+  if (cur.hardLockActive && Number(cur.hardLockEndTime) > endTime) endTime = Number(cur.hardLockEndTime);
+
   /*
    * IMPORTANT:
    * Save the timer BEFORE enabling the redirect.
@@ -194,6 +197,10 @@ async function lockUntil(endTime) {
 
 
   await enableBlocking();
+
+  // Rules only catch new page loads: reload tabs already open on a protected site.
+  const open = await chrome.tabs.query({ url: BLOCKED_DOMAINS.flatMap(d => ["*://" + d + "/*", "*://*." + d + "/*"]) }).catch(() => []);
+  open.forEach(t => chrome.tabs.reload(t.id).catch(() => {}));
 
 
   await chrome.alarms.clear(
@@ -269,28 +276,6 @@ chrome.runtime.onMessageExternal.addListener(
             success: true,
 
             active: true
-
-          });
-
-
-          return;
-
-        }
-
-
-        if (
-          message.action ===
-          "STOP_HARD_LOCK"
-        ) {
-
-          await stopHardLock();
-
-
-          sendResponse({
-
-            success: true,
-
-            active: false
 
           });
 
@@ -410,7 +395,7 @@ chrome.alarms.onAlarm.addListener(
       LOCK_ALARM
     ) {
 
-      await stopHardLock();
+      await checkLockState();
 
     }
 
@@ -517,7 +502,7 @@ chrome.runtime.onMessage.addListener(
           const code = String(message.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
           if (code && !LINK_CODE.test(code)) throw new Error("A link code is 8 letters or digits, like ABCD-2345.");
           await chrome.storage.local.set({ linkCode: code });
-          if (code) await pollLink();
+          if (code) await pollLink().catch(() => {});
           sendResponse({ success: true, code });
 
           return;
@@ -581,14 +566,15 @@ function siteOf(url) {
 }
 
 async function tickUsage() {
-  if (await chrome.idle.queryState(60) !== "active") return;
+  const idle = await chrome.idle.queryState(60);
+  if (idle === "locked") return;
 
   const win = await chrome.windows.getLastFocused().catch(() => null);
   if (!win || !win.focused) return;
 
   const [tab] = await chrome.tabs.query({ active: true, windowId: win.id });
   const site = tab && tab.url && siteOf(tab.url);
-  if (!site) return;
+  if (!site || (idle === "idle" && !tab.audible)) return;   // a playing video counts, a forgotten tab does not
 
   const { usage = {} } = await chrome.storage.local.get("usage");
   const day = dayKey();

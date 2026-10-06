@@ -405,3 +405,6 @@ linkForm.addEventListener("submit", async e => {
 });
 
 renderLink();
+
+/* a lock started on the website or a linked device while the popup is open */
+chrome.storage.onChanged.addListener(() => { loadStatus(); renderSites(); });
