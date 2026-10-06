@@ -425,3 +425,21 @@ renderLink();
 
 /* a lock started on the website or a linked device while the popup is open */
 chrome.storage.onChanged.addListener(() => { loadStatus(); renderSites(); });
+
+/* Lock time stays in step with maatram.co.in: picking it on either side picks it on both. */
+async function renderMinutes() {
+  const { preferredMinutes } = await chrome.storage.local.get("preferredMinutes");
+  const m = Number(preferredMinutes);
+  if (!m || document.activeElement === minutesElement) return;
+  if (![...minutesElement.options].some(o => Number(o.value) === m)) {
+    const o = document.createElement("option");
+    o.value = String(m); o.textContent = m + " minutes";
+    minutesElement.appendChild(o);
+  }
+  minutesElement.value = String(m);
+}
+minutesElement.addEventListener("change", () => {
+  chrome.storage.local.set({ preferredMinutes: Number(minutesElement.value) });
+});
+renderMinutes();
+chrome.storage.onChanged.addListener(changes => { if (changes.preferredMinutes) renderMinutes(); });

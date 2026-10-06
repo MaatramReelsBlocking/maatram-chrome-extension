@@ -96,7 +96,7 @@ async function setCustomSites(list) {
     throw new Error("You can add up to " + MAX_CUSTOM_SITES + " sites.");
   }
 
-  await chrome.storage.local.set({ customSites: clean });
+  await chrome.storage.local.set({ customSites: clean, customSitesSet: true });
   return clean;
 
 }
@@ -355,6 +355,20 @@ chrome.runtime.onMessageExternal.addListener(
 
         }
 
+
+        if (message.action === "SET_PREFERRED_MINUTES") {
+          const m = Number(message.minutes);
+          if (!Number.isInteger(m) || m < 1 || m > 180) throw new Error("Duration must be between 1 and 180 minutes.");
+          await chrome.storage.local.set({ preferredMinutes: m });
+          sendResponse({ success: true });
+          return;
+        }
+
+        if (message.action === "GET_SETTINGS") {
+          const d = await chrome.storage.local.get(["customSites", "customSitesSet", "preferredMinutes"]);
+          sendResponse({ success: true, sites: Array.isArray(d.customSites) ? d.customSites : [], minutes: d.preferredMinutes || null, set: Boolean(d.customSitesSet) });
+          return;
+        }
 
         if (message.action === "GET_USAGE") {
 
