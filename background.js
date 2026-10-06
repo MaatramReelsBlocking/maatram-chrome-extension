@@ -187,8 +187,11 @@ async function startHardLock(minutes) {
 /* Locks until an exact time (used by the toolbar, the website and linked devices). */
 async function lockUntil(endTime) {
 
-  const cur = await chrome.storage.local.get(["hardLockActive", "hardLockEndTime"]);
-  if (cur.hardLockActive && Number(cur.hardLockEndTime) > endTime) endTime = Number(cur.hardLockEndTime);
+  const cur = await chrome.storage.local.get(["hardLockActive", "hardLockEndTime", "hardLockStartTime"]);
+  const running = cur.hardLockActive && Number(cur.hardLockEndTime) > Date.now();
+  if (running && Number(cur.hardLockEndTime) > endTime) endTime = Number(cur.hardLockEndTime);
+  // when this lock began (kept if it only extends a running one), so maatram.co.in can draw its ring
+  const startTime = running && cur.hardLockStartTime ? Number(cur.hardLockStartTime) : Date.now();
 
   /*
    * IMPORTANT:
@@ -201,7 +204,9 @@ async function lockUntil(endTime) {
 
     hardLockActive: true,
 
-    hardLockEndTime: endTime
+    hardLockEndTime: endTime,
+
+    hardLockStartTime: startTime
 
   });
 
@@ -305,7 +310,9 @@ chrome.runtime.onMessageExternal.addListener(
 
               "hardLockActive",
 
-              "hardLockEndTime"
+              "hardLockEndTime",
+
+              "hardLockStartTime"
 
             ]);
 
@@ -328,6 +335,10 @@ chrome.runtime.onMessageExternal.addListener(
 
             endTime:
               data.hardLockEndTime ||
+              null,
+
+            startTime:
+              data.hardLockStartTime ||
               null
 
           });
