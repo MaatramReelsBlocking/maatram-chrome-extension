@@ -169,10 +169,13 @@ async function startHardLock(minutes) {
   }
 
 
-  const endTime =
-    Date.now() +
-    minutes * 60 * 1000;
+  await lockUntil(Date.now() + minutes * 60 * 1000);
 
+}
+
+
+/* Locks until an exact time (used by the toolbar, the website and linked devices). */
+async function lockUntil(endTime) {
 
   /*
    * IMPORTANT:
@@ -501,7 +504,21 @@ chrome.runtime.onMessage.addListener(
             Number(message.durationMinutes)
           );
 
+          pushLink(Number(message.durationMinutes)).catch(() => {});
+
           sendResponse({ success: true, active: true });
+
+          return;
+
+        }
+
+        if (message.action === "SET_LINK_CODE") {
+
+          const code = String(message.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+          if (code && !LINK_CODE.test(code)) throw new Error("A link code is 8 letters or digits, like ABCD-2345.");
+          await chrome.storage.local.set({ linkCode: code });
+          if (code) await pollLink();
+          sendResponse({ success: true, code });
 
           return;
 
@@ -589,3 +606,40 @@ chrome.alarms.get(USAGE_ALARM).then(a => a || chrome.alarms.create(USAGE_ALARM, 
 chrome.alarms.onAlarm.addListener(alarm => {
   if (alarm.name === USAGE_ALARM) tickUsage().catch(console.error);
 });
+
+/*
+ * Linked devices: one Hard Lock for maatram.co.in, the Maatram Hard Lock phone app and this
+ * extension. They share a link code; a lock started on any of them is stored under the code
+ * at maatram.co.in/api/link, and this extension checks it once a minute and locks too.
+ */
+
+const LINK_ALARM = "maatram-link-check";
+const LINK_CODE = /^[A-HJ-NP-Z2-9]{8}$/;
+const LINK_API = "https://maatram.co.in/api/link";
+
+async function pollLink() {
+  const { linkCode, hardLockEndTime } = await chrome.storage.local.get(["linkCode", "hardLockEndTime"]);
+  if (!LINK_CODE.test(linkCode || "")) return;
+  const r = await fetch(LINK_API + "?code=" + linkCode, { cache: "no-store" });
+  if (!r.ok) return;
+  const d = await r.json();
+  const end = d.end + (Date.now() - d.now);        // correct for this computer's clock
+  if (d.end > d.now + 3000 && end > Number(hardLockEndTime || 0) + 5000) await lockUntil(end);
+}
+
+async function pushLink(minutes) {
+  const { linkCode } = await chrome.storage.local.get("linkCode");
+  if (!LINK_CODE.test(linkCode || "")) return;
+  await fetch(LINK_API, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code: linkCode, minutes, by: "chrome" })
+  });
+}
+
+chrome.alarms.get(LINK_ALARM).then(a => a || chrome.alarms.create(LINK_ALARM, { periodInMinutes: 1 }));
+
+chrome.alarms.onAlarm.addListener(alarm => {
+  if (alarm.name === LINK_ALARM) pollLink().catch(() => {});
+});
+
+chrome.runtime.onStartup.addListener(() => pollLink().catch(() => {}));
