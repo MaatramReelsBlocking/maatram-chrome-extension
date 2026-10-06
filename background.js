@@ -645,3 +645,9 @@ chrome.permissions.onAdded.addListener(async () => {
   const data = await chrome.storage.local.get(["hardLockActive", "hardLockEndTime"]);
   if (data.hardLockActive && Number(data.hardLockEndTime) > Date.now()) await enableBlocking();
 });
+
+/* Site access taken away mid-lock: a redirect rule with no access lets the site through, so fall back to a plain block. */
+chrome.permissions.onRemoved.addListener(async () => {
+  const data = await chrome.storage.local.get(["hardLockActive", "hardLockEndTime"]);
+  if (data.hardLockActive && Number(data.hardLockEndTime) > Date.now()) await enableBlocking();
+});

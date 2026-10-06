@@ -1,751 +1,441 @@
-* {
-  box-sizing: border-box;
+/* Maatram Hard Lock popup — Minimal Glass (matches maatram.co.in "Minimal Glass" theme) */
+
+:root {
+  --bg: #0b0c0b;
+  --ink: #eceeee;
+  --dim: #9aa6a1;
+  --faint: #6f7a76;
+  --sage: #9cc0b2;
+  --sage-deep: #6f9384;
+  --glass: rgba(255, 255, 255, 0.055);
+  --glass-hi: rgba(255, 255, 255, 0.09);
+  --line: rgba(255, 255, 255, 0.13);
+  --danger: #f2a7a7;
+  --radius: 18px;
+  --radius-sm: 12px;
 }
 
+* { box-sizing: border-box; }
 
 body {
-
   margin: 0;
-
   width: 360px;
-
   min-height: 500px;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  background:
-    radial-gradient(
-      circle at 80% 10%,
-      rgba(0, 220, 180, 0.12),
-      transparent 35%
-    ),
-
-    #031914;
-
-  color: #e9fff8;
-
+  font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
 }
 
+/* soft sage orbs behind the glass */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(46px);
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  width: 220px; height: 220px;
+  top: -70px; right: -60px;
+  background: rgba(156, 192, 178, 0.30);
+}
+body::after {
+  width: 200px; height: 200px;
+  bottom: 40px; left: -80px;
+  background: rgba(111, 147, 132, 0.22);
+}
 
 .popup {
-
-  width: 100%;
-
-  min-height: 500px;
-
-  padding: 20px;
-
   position: relative;
-
-  overflow: hidden;
-
+  z-index: 1;
+  width: 100%;
+  min-height: 500px;
+  padding: 18px 16px 16px;
 }
 
+/* shared glass surface */
+.status-card,
+.timer-section,
+.site,
+.control-box,
+.lock-row select,
+.lock-row input,
+.site-chip,
+.badge {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
 
-/* =========================
-   BRAND
-========================= */
+/* ===== BRAND ===== */
 
 .brand {
-
   display: flex;
-
   align-items: center;
-
-  gap: 11px;
-
-  margin-bottom: 25px;
-
+  gap: 10px;
+  margin-bottom: 20px;
 }
-
 
 .brand-logo {
-
-  width: 42px;
-
-  height: 42px;
-
-  border-radius: 12px;
-
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
-  font-size: 23px;
-
-  font-weight: 900;
-
-  color: #05201a;
-
-  background:
-    linear-gradient(
-      135deg,
-      #2de2c2,
-      #36bdf5
-    );
-
-  box-shadow:
-    0 0 25px
-    rgba(45, 226, 194, 0.3);
-
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 18px rgba(0, 0, 0, 0.35);
 }
-
 
 .brand-name {
-
-  font-size: 16px;
-
-  font-weight: 900;
-
-  letter-spacing: 1px;
-
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
 }
-
 
 .brand-subtitle {
-
   margin-top: 2px;
-
-  font-size: 8px;
-
-  font-weight: bold;
-
-  letter-spacing: 2px;
-
-  color: #75a99f;
-
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--faint);
 }
 
-
-/* =========================
-   HEADER
-========================= */
+/* ===== HEADER ===== */
 
 .header {
-
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
-  margin-bottom: 15px;
-
+  margin-bottom: 14px;
 }
-
 
 .small-label {
-
-  font-size: 9px;
-
-  font-weight: 800;
-
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 2px;
-
-  color: #45d9bb;
-
+  color: var(--sage);
 }
-
 
 h1 {
-
   margin: 4px 0 0;
-
-  font-size: 29px;
-
+  font-size: 28px;
+  font-weight: 700;
   line-height: 1;
-
-  letter-spacing: -1px;
-
+  letter-spacing: -0.8px;
 }
-
 
 .badge {
-
-  padding: 8px 12px;
-
-  border-radius: 20px;
-
-  font-size: 9px;
-
-  font-weight: 900;
-
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 1px;
-
 }
 
-
-.badge.off {
-
-  color: #81aaa1;
-
-  border: 1px solid #19493e;
-
-  background: #071f1a;
-
-}
-
+.badge.off { color: var(--dim); }
 
 .badge.active {
-
-  color: #05201a;
-
-  border: 1px solid #30e1bc;
-
-  background:
-    linear-gradient(
-      135deg,
-      #2de2c2,
-      #32c7f0
-    );
-
+  color: #0b0c0b;
+  background: var(--sage);
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
-
-/* =========================
-   STATUS CARD
-========================= */
+/* ===== STATUS CARD ===== */
 
 .status-card {
-
   display: flex;
-
   align-items: center;
-
-  gap: 13px;
-
-  padding: 15px;
-
-  border-radius: 15px;
-
-  border: 1px solid #124b3f;
-
-  background:
-    rgba(5, 36, 29, 0.82);
-
-  box-shadow:
-    inset 0 1px 0
-    rgba(255,255,255,0.03);
-
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius);
 }
-
 
 .status-icon {
-
-  width: 42px;
-
-  height: 42px;
-
+  flex: none;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
-  font-size: 20px;
-
-  background: #092a22;
-
+  color: var(--dim);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
 }
 
+.status-icon svg { width: 20px; height: 20px; }
+.status-icon .ic-lock { display: none; }
+.status-icon[data-state="locked"] { color: var(--sage); }
+.status-icon[data-state="locked"] .ic-lock { display: block; }
+.status-icon[data-state="locked"] .ic-open { display: none; }
 
 .status-title {
-
   font-size: 14px;
-
-  font-weight: 800;
-
+  font-weight: 700;
 }
-
 
 .status-description {
-
-  margin-top: 4px;
-
-  font-size: 10px;
-
-  color: #72a99e;
-
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--dim);
+  line-height: 1.4;
 }
 
-
-/* =========================
-   TIMER
-========================= */
+/* ===== TIMER ===== */
 
 .timer-section {
-
-  margin-top: 20px;
-
-  padding: 18px;
-
+  margin-top: 12px;
+  padding: 18px 16px;
   text-align: center;
-
-  border-radius: 16px;
-
-  border: 1px solid #145143;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(7, 45, 36, 0.9),
-      rgba(3, 29, 24, 0.9)
-    );
-
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
 }
-
 
 .timer-label {
-
-  font-size: 9px;
-
-  font-weight: 900;
-
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 2px;
-
-  color: #50d9bf;
-
+  color: var(--faint);
 }
-
 
 .timer {
-
-  margin-top: 7px;
-
-  font-size: 36px;
-
-  font-weight: 900;
-
-  letter-spacing: 2px;
-
-  color: #f0fffb;
-
+  margin-top: 6px;
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
 }
 
+/* ===== SECTION TITLES ===== */
 
-/* =========================
-   PROTECTED SITES
-========================= */
-
-.blocked-section {
-
-  margin-top: 19px;
-
-}
-
+.blocked-section { margin-top: 18px; }
 
 .section-title {
-
-  margin-bottom: 9px;
-
-  font-size: 9px;
-
-  font-weight: 900;
-
+  margin-bottom: 8px;
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 2px;
-
-  color: #6fa79c;
-
+  color: var(--faint);
 }
 
+/* ===== PROTECTED SITES ===== */
 
 .sites {
-
   display: grid;
-
-  grid-template-columns:
-    1fr 1fr;
-
-  gap: 7px;
-
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
 }
-
 
 .site {
-
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
+  gap: 6px;
   padding: 9px 11px;
-
-  border-radius: 10px;
-
-  border: 1px solid #103b32;
-
-  background: #06231d;
-
-  font-size: 10px;
-
-  color: #c6e5de;
-
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--ink);
 }
 
+.site > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .dot {
-
-  width: 7px;
-
-  height: 7px;
-
+  flex: none;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-
-  background: #26d7b3;
-
-  box-shadow:
-    0 0 8px
-    rgba(38, 215, 179, 0.7);
-
+  background: var(--sage);
+  box-shadow: 0 0 0 3px rgba(156, 192, 178, 0.15);
 }
 
+/* ===== LOCK CONTROL ===== */
 
-/* =========================
-   CONTROL BOX
-========================= */
+.lock-control { margin-top: 18px; }
+.lock-control[hidden] { display: none; }
 
-.control-box {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  margin-top: 17px;
-
-  padding: 12px;
-
-  border-radius: 12px;
-
-  border: 1px solid #16473d;
-
-  background: #061f1a;
-
-}
-
-
-.control-icon {
-
-  width: 30px;
-
-  height: 30px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  border-radius: 9px;
-
-  font-size: 17px;
-
-  color: #061f1a;
-
-  background:
-    linear-gradient(
-      135deg,
-      #2de2c2,
-      #35bdf3
-    );
-
-}
-
-
-.control-title {
-
-  font-size: 10px;
-
-  font-weight: 900;
-
-}
-
-
-.control-text {
-
-  margin-top: 3px;
-
-  font-size: 9px;
-
-  color: #6e9d94;
-
-  line-height: 1.4;
-
-}
-
-
-/* =========================
-   FOOTER
-========================= */
-
-.footer {
-
-  display: flex;
-
-  justify-content: center;
-
-  gap: 7px;
-
-  margin-top: 17px;
-
-  font-size: 7px;
-
-  font-weight: 900;
-
-  letter-spacing: 1.3px;
-
-  color: #3e756b;
-
-}
-
-/* =========================
-   LOCK CONTROL
-========================= */
-
-.lock-control {
-
-  margin-top: 17px;
-
-}
-
-
-.lock-control[hidden] {
-
-  display: none;
-
-}
-
-
-.lock-control .section-title {
-
-  display: block;
-
-  margin-bottom: 8px;
-
-}
-
+.lock-control .section-title,
+.my-sites .section-title { display: block; }
 
 .lock-row {
-
   display: flex;
-
   gap: 8px;
-
 }
 
-
-.lock-row select {
-
+.lock-row select,
+.lock-row input {
   flex: 1;
-
   min-width: 0;
-
-  padding: 11px 10px;
-
-  border-radius: 10px;
-
-  border: 1px solid #16473d;
-
-  background: #061f1a;
-
-  color: #d6f3ec;
-
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
   font-size: 12px;
-
-  font-weight: 700;
-
+  font-weight: 600;
   font-family: inherit;
-
 }
 
+.lock-row input { font-weight: 500; }
+.lock-row input::placeholder { color: var(--faint); }
+
+.lock-row select option {
+  background: #161817;
+  color: var(--ink);
+}
 
 .lock-row button {
-
-  padding: 11px 18px;
-
-  border: 0;
-
-  border-radius: 10px;
-
+  height: 40px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
   cursor: pointer;
-
   font-size: 12px;
-
-  font-weight: 900;
-
-  letter-spacing: 0.5px;
-
+  font-weight: 700;
   font-family: inherit;
-
-  color: #05201a;
-
-  background:
-    linear-gradient(
-      135deg,
-      #2de2c2,
-      #32c7f0
-    );
-
+  color: #0b0c0b;
+  background: rgba(236, 238, 238, 0.94);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
+.lock-row button:hover { background: #ffffff; }
+.lock-row button:active { transform: scale(0.97); }
 
 .lock-row button:disabled {
-
-  opacity: 0.55;
-
+  opacity: 0.5;
   cursor: default;
-
+  transform: none;
 }
-
 
 .lock-row select:focus-visible,
-.lock-row button:focus-visible {
-
-  outline: 2px solid #35bdf3;
-
+.lock-row input:focus-visible,
+.lock-row button:focus-visible,
+.site-chip button:focus-visible {
+  outline: 2px solid var(--sage);
   outline-offset: 2px;
-
 }
-
 
 .lock-error {
-
   margin-top: 8px;
-
-  color: #ff9f9f;
-
-  font-size: 10px;
-
-  font-weight: 700;
-
+  color: var(--danger);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
+.lock-error:empty { display: none; }
 
-.lock-error:empty {
+/* ===== YOUR SITES + LINK ===== */
 
-  display: none;
-
-}
-
-
-/* =========================
-   YOUR SITES
-========================= */
-
-.my-sites {
-
-  margin-top: 17px;
-
-}
-
-.my-sites .section-title {
-
-  display: block;
-
-}
-
-.lock-row input {
-
-  flex: 1;
-
-  min-width: 0;
-
-  padding: 11px 10px;
-
-  border-radius: 10px;
-
-  border: 1px solid #16473d;
-
-  background: #061f1a;
-
-  color: #d6f3ec;
-
-  font-size: 12px;
-
-  font-family: inherit;
-
-}
-
-.lock-row input:focus-visible {
-
-  outline: 2px solid #35bdf3;
-
-  outline-offset: 2px;
-
-}
+.my-sites { margin-top: 18px; }
 
 .site-list {
-
   display: flex;
-
   flex-wrap: wrap;
-
   gap: 6px;
-
   margin-top: 8px;
-
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--dim);
 }
 
 .site-chip {
-
   display: inline-flex;
-
   align-items: center;
-
   gap: 2px;
-
-  padding: 4px 4px 4px 10px;
-
+  padding: 3px 3px 3px 11px;
   border-radius: 999px;
-
-  border: 1px solid #16473d;
-
-  color: #d6f3ec;
-
+  color: var(--ink);
   font-size: 11px;
-
-  font-weight: 700;
-
+  font-weight: 600;
 }
 
 .site-chip button {
-
   width: 22px;
-
   height: 22px;
-
   border: 0;
-
   border-radius: 50%;
-
   background: none;
-
-  color: #6fa79c;
-
+  color: var(--dim);
   font-size: 14px;
-
+  line-height: 1;
   cursor: pointer;
-
 }
 
 .site-chip button:hover {
-
-  color: #d6f3ec;
-
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .my-sites.locked form,
-.my-sites.locked .site-chip button {
+.my-sites.locked .site-chip button { display: none; }
 
-  display: none;
+/* ===== CONTROL BOX ===== */
 
+.control-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: var(--radius);
 }
+
+.control-icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--sage);
+  background: rgba(156, 192, 178, 0.12);
+  border: 1px solid rgba(156, 192, 178, 0.28);
+}
+
+.control-title {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.control-text {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--dim);
+  line-height: 1.4;
+}
+
+/* ===== FOOTER ===== */
+
+.footer {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 16px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lock-row button { transition: none; }
+}
+
+.my-sites.locked .site-chip { padding: 3px 11px; }

@@ -103,8 +103,8 @@ function showActive(endTime) {
     "Your protected sites are locked";
 
 
-  iconElement.textContent =
-    "🔒";
+  iconElement.dataset.state =
+    "locked";
 
 
   badgeElement.textContent =
@@ -190,8 +190,8 @@ function showInactive() {
     "00:00:00";
 
 
-  iconElement.textContent =
-    "🔓";
+  iconElement.dataset.state =
+    "open";
 
 
   badgeElement.textContent =
