@@ -439,3 +439,7 @@ h1 {
 }
 
 .my-sites.locked .site-chip { padding: 3px 11px; }
+
+a.control-box { color: inherit; text-decoration: none; cursor: pointer; transition: background 0.15s ease; }
+a.control-box:hover { background: var(--glass-hi); }
+a.control-box:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
