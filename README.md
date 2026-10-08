@@ -4,6 +4,8 @@ The Chrome extension for [Maatram](https://maatram.co.in), the free focus and sc
 
 **Chrome Web Store:** https://chromewebstore.google.com/detail/maatram-hard-lock/igcfbmdadjlibodcpaibklgeijdacmen
 
+**Blog:** [How to Stop Scrolling Reels: 5 Friction Tricks for Students](https://maatram.co.in/blog-stop-scrolling-reels.html)
+
 ## What it does
 
 - **Hard Lock** — start a focus window from the toolbar popup or from [maatram.co.in/app-gate.html](https://maatram.co.in/app-gate.html). Until it ends, Instagram, YouTube, TikTok, Snapchat, X and Facebook open the Maatram lock screen instead.
