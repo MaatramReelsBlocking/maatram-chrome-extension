@@ -11,13 +11,14 @@ const RULE_ID_START = 1000;
 const CUSTOM_RULE_START = 2000;   // your own sites: 2000, 2001, ...
 const MAX_CUSTOM_SITES = 50;
 const LOCK_ALARM = "maatram-hard-lock";
+const NOCOOKIE_RULE_ID = RULE_ID_START + BLOCKED_DOMAINS.length;
 
 
 async function createBlockingRules() {
 
   // A redirect needs site access. If the user sets a site to "on click" in Chrome,
   // the redirect is skipped and the site loads, so fall back to a plain block.
-  return Promise.all(BLOCKED_DOMAINS.map(async (domain, index) => ({
+  const rules = await Promise.all(BLOCKED_DOMAINS.map(async (domain, index) => ({
     id: RULE_ID_START + index,
     priority: 100,
     action: (await hasSiteAccess(domain))
@@ -25,6 +26,14 @@ async function createBlockingRules() {
       : { type: "block" },
     condition: { requestDomains: [domain], resourceTypes: ["main_frame"] }
   })));
+
+  // youtube-nocookie.com/embed/<id> plays any YouTube video: lock it with YouTube.
+  // A plain block, so no extra site access is asked for.
+  if (rules.some(r => r.id === RULE_ID_START + BLOCKED_DOMAINS.indexOf("youtube.com"))) {
+    rules.push({ id: NOCOOKIE_RULE_ID, priority: 100, action: { type: "block" }, condition: { requestDomains: ["youtube-nocookie.com"], resourceTypes: ["main_frame"] } });
+  }
+
+  return rules;
 
 }
 
@@ -118,7 +127,7 @@ async function enableBlocking() {
   await chrome.declarativeNetRequest.updateDynamicRules({
 
     removeRuleIds:
-      rules.map(rule => rule.id).concat(await customRuleIds()),
+      rules.map(rule => rule.id).concat(NOCOOKIE_RULE_ID, await customRuleIds()),
 
     addRules:
       rules
@@ -134,7 +143,7 @@ async function disableBlocking() {
     BLOCKED_DOMAINS.map(
       (_, index) =>
         RULE_ID_START + index
-    ).concat(await customRuleIds());
+    ).concat(NOCOOKIE_RULE_ID, await customRuleIds());
 
   await chrome.declarativeNetRequest.updateDynamicRules({
 
