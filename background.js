@@ -13,34 +13,18 @@ const MAX_CUSTOM_SITES = 50;
 const LOCK_ALARM = "maatram-hard-lock";
 
 
-function createBlockingRules() {
+async function createBlockingRules() {
 
-  return BLOCKED_DOMAINS.map((domain, index) => {
-
-    return {
-      id: RULE_ID_START + index,
-
-      priority: 100,
-
-      action: {
-        type: "redirect",
-
-        redirect: {
-          extensionPath: "/blocked.html"
-        }
-      },
-
-      condition: {
-        requestDomains: [domain],
-
-        resourceTypes: [
-          "main_frame"
-         
-       ]
-      }
-    };
-
-  });
+  // A redirect needs site access. If the user sets a site to "on click" in Chrome,
+  // the redirect is skipped and the site loads, so fall back to a plain block.
+  return Promise.all(BLOCKED_DOMAINS.map(async (domain, index) => ({
+    id: RULE_ID_START + index,
+    priority: 100,
+    action: (await hasSiteAccess(domain))
+      ? { type: "redirect", redirect: { extensionPath: "/blocked.html" } }
+      : { type: "block" },
+    condition: { requestDomains: [domain], resourceTypes: ["main_frame"] }
+  })));
 
 }
 
@@ -127,7 +111,7 @@ async function customRuleIds() {
 async function enableBlocking() {
 
   const rules =
-    createBlockingRules().concat(
+    (await createBlockingRules()).concat(
       await createCustomRules(await getCustomSites())
     );
 
@@ -462,6 +446,15 @@ async function checkLockState() {
       ) <= Date.now()
     ) {
 
+      // Moving the computer's clock forward must not end the lock early:
+      // check the real time first and wait out what is left.
+      const left = Number(data.hardLockEndTime) - await realNow();
+
+      if (left > 5000) {
+        await chrome.alarms.create(LOCK_ALARM, { delayInMinutes: left / 60000 });
+        return;
+      }
+
       await stopHardLock();
 
     }
@@ -495,6 +488,19 @@ async function checkLockState() {
 
   }
 
+}
+
+
+/* maatram.co.in's clock; this computer's if the site can't be reached. */
+async function realNow() {
+  // ponytail: offline + clock moved forward still ends the lock; needs a signed time source to close
+  try {
+    const r = await fetch("https://maatram.co.in/", { method: "HEAD", cache: "no-store" });
+    const t = Date.parse(r.headers.get("date"));
+    return Number.isNaN(t) ? Date.now() : t;
+  } catch (_) {
+    return Date.now();
+  }
 }
 
 
@@ -675,4 +681,17 @@ chrome.permissions.onAdded.addListener(async () => {
 chrome.permissions.onRemoved.addListener(async () => {
   const data = await chrome.storage.local.get(["hardLockActive", "hardLockEndTime"]);
   if (data.hardLockActive && Number(data.hardLockEndTime) > Date.now()) await enableBlocking();
+});
+
+/*
+ * Rules only see requests that reach the network. Back/forward cache and a site's own
+ * service worker can show a page with no request, so also catch the tab itself.
+ */
+chrome.tabs.onUpdated.addListener(async (tabId, info) => {
+  if (!info.url || !/^https?:/.test(info.url)) return;
+  const host = new URL(info.url).hostname;
+  const rules = await chrome.declarativeNetRequest.getDynamicRules();
+  const rule = rules.find(r => (r.condition.requestDomains || []).some(d => host === d || host.endsWith("." + d)));
+  // tab URLs are only visible on sites with access, which always have the redirect rule
+  if (rule && rule.action.type === "redirect") chrome.tabs.update(tabId, { url: chrome.runtime.getURL(rule.action.redirect.extensionPath) }).catch(() => {});
 });
